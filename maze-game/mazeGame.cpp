@@ -6,6 +6,39 @@ using namespace sf;
 
 int main()
 {
+	const int w=25, h=100;
+	int posX = 100, posY = 100;
+
+	// 맵 배열
+	char map1[w][h] = {
+	{"11111111111111111111111111111111111111111111111111111111"},
+	{"10000000100000000000000000000000000000000000000000000001"},
+	{"10000000100000000000000000000000000000000000000000000001"}, // 0 : 빈 공간 
+	{"10001000100000000000000000000000000000000000000000000001"}, // 1 : 벽 
+	{"10001000100000000000000000000000000000000000000000000001"}, // k : 열쇠 
+	{"10001000100000000000000000000000000000000000000000000001"}, // l : 잠긴 문 
+	{"10001000111111000000000000000000000000000000000000000001"}, // q : 탈출구  
+	{"10001000000001000000000000000000000000000000000000000001"},
+	{"10001000100001000000000000000000000000000000000000000001"},
+	{"10001000100k01000000000000000000000000000000000011111111"},
+	{"10001000100001000000000000000000000000000000000010000001"},
+	{"10s010001111111111111111111111111111111111111111100q0001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"10001000l00000000000000k0000000000000000000000l000000001"},
+	{"11111111111111111111111111111111111111111111111111111111"}
+	};
+
+
 	int x = 0, y = 0;
 
 	Clock clock;	//경과 시간을 측정할 수 있는 Clock 객체 선언
@@ -18,42 +51,21 @@ int main()
 	cout << "게임 시작" << endl;
 
 	// 텍스쳐, 스프라이트
-	Texture Tbackground, Tstart, Trule, Trank;
-	Sprite background, start, rule, rankBtn;
+	//Texture Tbackground, Tstart, Trule, Trank;
+	//Sprite background, start, rule, rankBtn;
 
-	Texture rankScreen, ruleScreen, mapScreen;
-	Sprite rank_screen, rule_screen, map_screen;
+	//Texture rankScreen, ruleScreen, mapScreen;
+	//Sprite rank_screen, rule_screen, map_screen;
 
+	// 미로 사각형
+	RectangleShape rect_maze;
+	rect_maze.setSize(Vector2f(20, 20));
+	rect_maze.setFillColor(Color(96, 58, 18));
+	rect_maze.setPosition(100, 100);
 
-
-	// 이미지 파일 읽기
-	Tbackground.loadFromFile("images/bg.png");
-	Tstart.loadFromFile("images/startBtn.png");
-	Trule.loadFromFile("images/ruleBtn.png");
-	Trank.loadFromFile("images/rankBtn.png");
-	rankScreen.loadFromFile("images/rankScreen.png");
-	ruleScreen.loadFromFile("images/ruleScreen.png");
-	mapScreen.loadFromFile("images/mapScreen.png");
-
-	// Sprite 세팅
-	background.setTexture(Tbackground);
-
-	start.setTexture(Tstart);
-	start.setPosition(100, 600);
-
-	rule.setTexture(Trule);
-	rule.setPosition(550, 590);
-
-	rankBtn.setTexture(Trank);
-	rankBtn.setPosition(1000, 600);
-
-	rank_screen.setTexture(rankScreen);
-	rule_screen.setTexture(ruleScreen);
-	map_screen.setTexture(mapScreen);
-	map_screen.setPosition(0, 0);
 
 	// 화면 크기, 캡션 이름 설정
-	RenderWindow app(VideoMode(1500, 900), "MazeGame");
+	RenderWindow app(VideoMode(1000, 600), "MazeGame");
 	app.setFramerateLimit(60);	//프레임 비율 설정
 
 	// 초당 60 프레임 설정
@@ -81,41 +93,25 @@ int main()
 				cout << "게임 종료" << endl;
 			}
 
-			// 마우스 버튼 눌림 이벤트
-			if (event.type == Event::MouseButtonPressed)
-			{
-				switch (event.key.code)
-				{
-				case Mouse::Left:
-				{
-					Vector2i pos = Mouse::getPosition(app);
-
-					if (pos.x >= 155 && pos.x <= 500 && pos.y >= 614 && pos.y <= 720) {
-						cout << "게임 시작버튼 눌림" << endl;
-						//app.clear();
-						app.draw(map_screen);
-					}
-					else if (pos.x >= 576 && pos.x <= 946 && pos.y >= 628 && pos.y <= 728) {
-						cout << "게임 방법버튼 눌림" << endl;
-						//app.clear();
-						app.draw(rule_screen);
-					}
-					else if (pos.x >= 1027 && pos.x <= 1401 && pos.y >= 630 && pos.y <= 732) {
-						cout << "게임 랭킹버튼 눌림" << endl;
-						//app.clear();
-						app.draw(rank_screen);
-					}
-					else {
-						app.draw(background);
-						app.draw(start);
-						app.draw(rule);
-						app.draw(rankBtn);
-					}
-				}
-				}
-
-			}
 		}
+
+
+		app.clear(Color(193, 163, 107, 255));
+
+		// 배열 그려주기
+		
+		for (int i = 0; i < w; i++) {	//y
+			for (int j = 0; j < h; j++) {	// x
+				char temp = map1[i][j];
+				if (temp == '1') {	//벽
+					rect_maze.setPosition(posX + (j * 15), posY + (i * 15));
+					app.draw(rect_maze);
+				}
+			}
+			
+		}
+		
+
 
 		// 프레임 스크린에 출력
 		app.display();
