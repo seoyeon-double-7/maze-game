@@ -1,44 +1,8 @@
 #include "game.h"
 
 mazeGame::mazeGame() {
-
-    // 시간 관련 변수 정의
-    srand(sin(time(nullptr)) * 1000);
-
-    app.create(VideoMode(600, 600),"maze Game");
-    app.setFramerateLimit(60);
-
-    // 길 변수 정의
-    //orderedSet[15 * 15];
-    //path[100];
-    Maze = Color(96, 58, 18);
-
-    // 플레이어 정의
-    player = Vector2i(13, 13);
-
-    playerTex.loadFromFile("images/ch3.png");
-    playerSprite.setTexture(playerTex);
-    playerSprite.setPosition(player.x * 40.f, player.y * 40.f);
-
-    // 적 정의
-    opponent = Vector2i(1, 1);
-
-    opponentTex.loadFromFile("images/enemy2.png");
-    opponentSprite.setTexture(opponentTex);
-    opponentSprite.setPosition(opponent.x * 40.f, opponent.y * 40.f);
-
-    // 코인 정의
-    coinTex.loadFromFile("images/coin.png");
-
-
-
-    numCoins = 0;
-    score = 0;
-
-    //gameMap[15 * 15];
-    //displayRects[15 * 15];
-
-    //To Do : Music 함수 추가
+    // 화면 크기 설정해주기
+    window.create(VideoMode(600, 600), "maze Game");
 }
 
 void mazeGame::Intro()
@@ -78,17 +42,17 @@ void mazeGame::Intro()
     map_screen.setTexture(mapScreen);
     map_screen.setPosition(0, 0);
 
-    while (app.isOpen()) {
+    while (window.isOpen()) {
         Event event;
         //이벤트 처리
 
-        while (app.pollEvent(event)) {
+        while (window.pollEvent(event)) {
 
 
             // 프로그램 종료 이벤트 처리
             if (event.type == Event::EventType::Closed)
             {
-                app.close();
+                window.close();
                 cout << "게임 종료" << endl;
             }
 
@@ -99,28 +63,28 @@ void mazeGame::Intro()
                 {
                 case Mouse::Left:
                 {
-                    Vector2i pos = Mouse::getPosition(app);
+                    Vector2i pos = Mouse::getPosition(window);
 
                     if (pos.x >= 155 && pos.x <= 500 && pos.y >= 614 && pos.y <= 720) {
                         cout << "게임 시작버튼 눌림" << endl;
                         //app.clear(Color::Black);
-                        app.draw(map_screen);
+                        window.draw(map_screen);
                     }
                     else if (pos.x >= 576 && pos.x <= 946 && pos.y >= 628 && pos.y <= 728) {
                         cout << "게임 방법버튼 눌림" << endl;
                         //app.clear(Color::Black);
-                        app.draw(rule_screen);
+                        window.draw(rule_screen);
                     }
                     else if (pos.x >= 1027 && pos.x <= 1401 && pos.y >= 630 && pos.y <= 732) {
                         cout << "게임 랭킹버튼 눌림" << endl;
                         //app.clear(Color::Black);
-                        app.draw(rank_screen);
+                        window.draw(rank_screen);
                     }
                     else {
-                        app.draw(background);
-                        app.draw(start);
-                        app.draw(rule);
-                        app.draw(rankBtn);
+                        window.draw(background);
+                        window.draw(start);
+                        window.draw(rule);
+                        window.draw(rankBtn);
                     }
                 }
                 }
@@ -129,30 +93,14 @@ void mazeGame::Intro()
         }
 
         // 프레임 스크린에 출력
-        app.display();
+        window.display();
     }
 
 }
 
 void mazeGame::GameSet() {
 
-    // 미로가 될 사각형 세팅 (위치, 사이즈, 배치)
-
-    for (int i = 0; i < 15; i++) {
-        for (int j = 0; j < 15; j++) {
-            displayRects[i + j * 15].setPosition(i * 40.f, j * 40.f);
-            displayRects[i + j * 15].setSize(Vector2f(40.f, 40.f));
-            //displayRects[i + j * 15].setOutlineThickness(1.f);
-            //displayRects[i + j * 15].setOutlineColor(Color(0, 0, 0));
-
-            if (!(i == opponent.x && j == opponent.y) && !(i == player.x && j == player.y)) {
-                if (rand() / (float)RAND_MAX < 0.22f || i == 0 || j == 0 || i == 14 || j == 14) {
-                    gameMap[i + j * 15] = 1;
-                    displayRects[i + j * 15].setFillColor(Maze);
-                }
-            }
-        }
-    }
+    
 
     
 }
@@ -164,54 +112,115 @@ void mazeGame::Rank()
 
 void mazeGame::GameStart()
 {
-    // 시간 변수   
+    //rand 함수에 사용될 수 초기화 하기
+    srand(sin(time(nullptr)) * 1000);
+
+    // 게임 시간을 재기위한 변수
     int frameCount = 0;
     int moveTimer = 1000;
 
-    while (app.isOpen()) {
+    // 플레이어의 경로를 확인하는 변수
+    bool updatePath = true;
+    int orderedSet[15 * 15];
+    int path[100];
+    int pathSize = 0;
+    int pathPos = 0;
+
+    // 플레이어 세팅
+    Vector2i player = Vector2i(13, 13);
+    Texture playerTex;
+    playerTex.loadFromFile("images/player.png");
+    Sprite playerSprite;
+    playerSprite.setTexture(playerTex);
+    playerSprite.setPosition(player.x * 40.f, player.y * 40.f);
+
+    // 도착지 세팅
+    Vector2i door = Vector2i(1, 13);
+    Texture doorTex;
+    doorTex.loadFromFile("images/star.png");
+    Sprite doorSprite;
+    doorSprite.setTexture(doorTex);
+    doorSprite.setPosition(door.x * 40.f, player.y * 40.f);
+
+    // 적 세팅
+    Vector2i opponent = Vector2i(1, 1);
+    Texture opponentTex;
+    opponentTex.loadFromFile("images/enemy.png");
+    Sprite opponentSprite;
+    opponentSprite.setTexture(opponentTex);
+    opponentSprite.setPosition(opponent.x * 40.f, opponent.y * 40.f);
+
+    // 열쇠는 추후 개발
+    /*Texture coinTex;
+    coinTex.loadFromFile("images/coin.png");
+    Sprite coins[5];
+    int numCoins = 0;
+    int score = 0;*/
+
+    // 미로 배열을 담을 변수
+    int gameMap[15 * 15];
+    RectangleShape displayRects[15 * 15];
+
+    // 미로 구성하는 displayRects 세팅 (위치, 사이즈 배치시키기)
+    for (int i = 0; i < 15; i++) {
+        for (int j = 0; j < 15; j++) {
+            displayRects[i + j * 15].setPosition(i * 40.f, j * 40.f);
+            displayRects[i + j * 15].setSize(Vector2f(40.f, 40.f));
+            //displayRects[i + j * 15].setOutlineThickness(1.f);
+            //displayRects[i + j * 15].setOutlineColor(Color(0, 0, 0));
+
+
+            // 플레이어의 좌표값과 적의 좌표값이 같지 않으며
+            // 미로 위치와 플레이어와 적 위치가 겹치지 않게 함
+            if (!(i == opponent.x && j == opponent.y) && !(i == player.x && j == player.y)) {
+                if (rand() / (float)RAND_MAX < 0.22f || i == 0 || j == 0 || i == 14 || j == 14) {
+                    gameMap[i + j * 15] = 1;
+                    displayRects[i + j * 15].setFillColor(back);
+                }
+            }
+        }
+    }
+
+    while (window.isOpen()) {
+
         Event event;
-        while (app.pollEvent(event)) {
+
+        while (window.pollEvent(event)) {
+
             if (event.type == Event::Closed) {
-                app.close();
+                window.close();
             }
 
-            // 키보드 입력 (충돌처리 포함)
+            // 키보드 입력 (충돌처리)
 
             else if (event.type == Event::KeyPressed) {
 
-
-                // 플레이어 좌표값을 가져와서 미로가 배열이 막혀있지 않으면 이동
+                // 플레이어 좌표값을 가져와서 미로배열이 막혀있지 않으면 무브무브!!
 
                 switch (event.key.code) {
 
                 case Keyboard::Up:
-                    
                     if (gameMap[player.x + (player.y - 1) * 15] != 1) player.y -= 1;
                     break;
 
                 case Keyboard::Down:
-
                     if (gameMap[player.x + (player.y + 1) * 15] != 1) player.y += 1;
                     break;
 
                 case Keyboard::Right:
-
                     if (gameMap[(player.x + 1) + player.y * 15] != 1) player.x += 1;
                     break;
 
                 case Keyboard::Left:
-
                     if (gameMap[(player.x - 1) + player.y * 15] != 1) player.x -= 1;
                     break;
                 }
-
             }
 
-            //path 변수 정의
+            // 경로 설정해주긔~
             updatePath = true;
             pathSize = 0;
             pathPos = 0;
-
             playerSprite.setPosition(player.x * 40.f, player.y * 40.f);
         }
 
@@ -228,26 +237,26 @@ void mazeGame::GameStart()
             }
         }*/
 
-        // app.clear(Color::Red); 
+        //window.clear(Color(255, 255, 255));
 
-
-        // 미로를 그려줌
+        // 미로 그려주기
         for (int i = 0; i < 15 * 15; i++) {
-            app.draw(displayRects[i]);
+            window.draw(displayRects[i]);
         }
 
         /*for (int i = 0; i < numCoins; i++) {
-            app.draw(coins[i]);
+            window.draw(coins[i]);
         }*/
 
         // 플레이어의 좌표값을 계산하여 적이 플레이어의 좌표값에 근접하게 이동
+        // a* 알고리즘 활용
         if (updatePath == true) {
             int counter = 0;
 
-            //int fullSet[2000];
+            int fullSet[2000];
             int fullSetSize = 0;
 
-            //int openSet[100];
+            int openSet[100];
             int openSetSize = 2;
             openSet[0] = player.x + player.y * 15;
             openSet[1] = counter;
@@ -257,6 +266,7 @@ void mazeGame::GameStart()
             while (currentIndex != opponent.x + opponent.y * 15) {
                 currentIndex = openSet[0];
                 counter = openSet[1] + 1;
+                int neighbors[4];
 
                 neighbors[0] = currentIndex - 1;
                 neighbors[1] = currentIndex + 1;
@@ -311,6 +321,7 @@ void mazeGame::GameStart()
             int pathIndex = opponent.x + opponent.y * 15;
 
             while (pathIndex != player.x + player.y * 15) {
+                int neighbors[4];
 
                 neighbors[0] = pathIndex - 1;
                 neighbors[1] = pathIndex + 1;
@@ -348,18 +359,16 @@ void mazeGame::GameStart()
         }
 
 
-        // 플레이어 그려주기
-        app.draw(playerSprite);
+        // 플레이어, 적, 도착지 그려주기
+        window.draw(playerSprite);
+        window.draw(opponentSprite);
+        window.draw(doorSprite);
 
-        // 적 그려주기
-        app.draw(opponentSprite);
+        window.display();
 
-        app.display();
-
-        // 화면 넘치치 않도록 해줌
-        if (gameMap[player.x + player.y * 15] == 2) {
+        /*/if (gameMap[player.x + player.y * 15] == 2) {
             gameMap[player.x + player.y * 15] = 0;
-            /*
+
             int coinIndex = -1;
             for (int i = 0; i < numCoins; i++) {
                 if (coins[i].getPosition().x / 40 == player.x && coins[i].getPosition().y / 40 == player.y) {
@@ -372,15 +381,24 @@ void mazeGame::GameStart()
             }
 
             score += 1;
-            numCoins -= 1;*/
+            numCoins -= 1;
         }
-
+        */
         frameCount += 1;
 
-        // 플레이어와 적이 충돌했을 때 최종 점수를 출력해줌
-        // 코인 획득에 따른 점수 구현할 예정
+        // 도착지에 도달했을 때 종료 (다음 맵으로 넘어가게 하기)
+
+        if (player == door) {
+            cout << "도착지 도착!" << endl;
+            break;
+        }
+
+        // 플레이어와 적이 충돌했을 때
+        // To:Do 코인 획득에 따른 점수 출력
+
         if (player == opponent) {
-            cout << "Final Score: " << score << endl;
+            cout << "게임 종료입니당~~: " << endl;
+            break;
         }
     }
 }

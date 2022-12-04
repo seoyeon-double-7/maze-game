@@ -4,7 +4,7 @@ int main(void) {
 
     mazeGame game;
     //game.Intro();
-    game.GameSet();
+    //game.GameSet();
     game.GameStart();
 
 
