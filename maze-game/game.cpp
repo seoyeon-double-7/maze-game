@@ -5,6 +5,27 @@ mazeGame::mazeGame() {
 
     // 화면 크기 설정해주기
     window.create(VideoMode(600, 600), "maze Game");
+
+    // 플레이어 세팅
+    player = Vector2i(13, 13);
+    playerTex.loadFromFile("images/player.png");
+    playerSprite.setTexture(playerTex);
+    playerSprite.setPosition(player.x * 40.f, player.y * 40.f);
+
+    // 도착지 세팅
+    door = Vector2i(1, 13);
+    doorTex.loadFromFile("images/star.png");
+    doorSprite.setTexture(doorTex);
+    doorSprite.setPosition(door.x * 40.f, player.y * 40.f);
+
+    // 적 세팅
+    opponent = Vector2i(1, 1);
+    opponentTex.loadFromFile("images/enemy.png");
+    opponentSprite.setTexture(opponentTex);
+    opponentSprite.setPosition(opponent.x * 40.f, opponent.y * 40.f);
+
+
+
 }
 
 void mazeGame::Intro()
@@ -112,10 +133,6 @@ void mazeGame::Rank()
     // 파일 입출력
 }
 
-void mazeGame::Music()
-{
-   
-}
 
 void mazeGame::GameStart()
 {
@@ -129,33 +146,10 @@ void mazeGame::GameStart()
     // 플레이어의 경로를 확인하는 변수
     bool updatePath = true;
     int orderedSet[15 * 15];
-    int path[100];
+    int path[100]={0};
     int pathSize = 0;
     int pathPos = 0;
 
-    // 플레이어 세팅
-    Vector2i player = Vector2i(13, 13);
-    Texture playerTex;
-    playerTex.loadFromFile("images/player.png");
-    Sprite playerSprite;
-    playerSprite.setTexture(playerTex);
-    playerSprite.setPosition(player.x * 40.f, player.y * 40.f);
-
-    // 도착지 세팅
-    Vector2i door = Vector2i(1, 13);
-    Texture doorTex;
-    doorTex.loadFromFile("images/star.png");
-    Sprite doorSprite;
-    doorSprite.setTexture(doorTex);
-    doorSprite.setPosition(door.x * 40.f, player.y * 40.f);
-
-    // 적 세팅
-    Vector2i opponent = Vector2i(1, 1);
-    Texture opponentTex;
-    opponentTex.loadFromFile("images/enemy.png");
-    Sprite opponentSprite;
-    opponentSprite.setTexture(opponentTex);
-    opponentSprite.setPosition(opponent.x * 40.f, opponent.y * 40.f);
 
     // 열쇠는 추후 개발
     /*Texture coinTex;
@@ -165,8 +159,7 @@ void mazeGame::GameStart()
     int score = 0;*/
 
     // 미로 배열을 담을 변수
-    int gameMap[15 * 15];
-    RectangleShape displayRects[15 * 15];
+    
 ;
 
     // 미로 구성하는 displayRects 세팅 (위치, 사이즈 배치시키기)
@@ -190,7 +183,6 @@ void mazeGame::GameStart()
     }
 
     while (window.isOpen()) {
-        Music();
 
         Event event;
 
@@ -399,6 +391,7 @@ void mazeGame::GameStart()
 
         if (player == door) {
             cout << "도착지 도착!" << endl;
+            cout << frameCount/1000 << "초" << endl;
             break;
         }
 

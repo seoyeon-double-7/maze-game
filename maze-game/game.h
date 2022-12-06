@@ -12,12 +12,26 @@ using namespace sf;
 class mazeGame {
 private:
 	RenderWindow window;
-	//Color back;
+
+	Vector2i player;
+	Texture playerTex;
+	Sprite playerSprite;
+
+	Vector2i door;
+	Texture doorTex;
+	Sprite doorSprite;
+
+	Vector2i opponent;
+	Texture opponentTex;
+	Sprite opponentSprite;
+
+	int gameMap[15 * 15];
+	RectangleShape displayRects[15 * 15];
+
 public:
 	mazeGame();	// 생성자
 	void Intro();	// 인트로 (게임 시작, 게임룰, 랭킹)
 	void GameSet();	// 게임 준비
 	void GameStart();	//게임 시작
 	void Rank();
-	void Music();
 };
