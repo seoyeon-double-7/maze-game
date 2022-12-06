@@ -1,6 +1,8 @@
 #include "game.h"
 
+
 mazeGame::mazeGame() {
+
     // 화면 크기 설정해주기
     window.create(VideoMode(600, 600), "maze Game");
 }
@@ -110,6 +112,11 @@ void mazeGame::Rank()
     // 파일 입출력
 }
 
+void mazeGame::Music()
+{
+   
+}
+
 void mazeGame::GameStart()
 {
     //rand 함수에 사용될 수 초기화 하기
@@ -160,28 +167,30 @@ void mazeGame::GameStart()
     // 미로 배열을 담을 변수
     int gameMap[15 * 15];
     RectangleShape displayRects[15 * 15];
+;
 
     // 미로 구성하는 displayRects 세팅 (위치, 사이즈 배치시키기)
     for (int i = 0; i < 15; i++) {
         for (int j = 0; j < 15; j++) {
             displayRects[i + j * 15].setPosition(i * 40.f, j * 40.f);
             displayRects[i + j * 15].setSize(Vector2f(40.f, 40.f));
-            //displayRects[i + j * 15].setOutlineThickness(1.f);
-            //displayRects[i + j * 15].setOutlineColor(Color(0, 0, 0));
+            displayRects[i + j * 15].setOutlineThickness(1.f);
+            displayRects[i + j * 15].setOutlineColor(Color::Black);
 
 
             // 플레이어의 좌표값과 적의 좌표값이 같지 않으며
             // 미로 위치와 플레이어와 적 위치가 겹치지 않게 함
-            if (!(i == opponent.x && j == opponent.y) && !(i == player.x && j == player.y)) {
+            if (!(i == opponent.x && j == opponent.y) && !(i == player.x && j == player.y) && !(i == door.x && j == door.y)) {
                 if (rand() / (float)RAND_MAX < 0.22f || i == 0 || j == 0 || i == 14 || j == 14) {
                     gameMap[i + j * 15] = 1;
-                    displayRects[i + j * 15].setFillColor(back);
+                    displayRects[i + j * 15].setFillColor(Color::Cyan);
                 }
             }
         }
     }
 
     while (window.isOpen()) {
+        Music();
 
         Event event;
 
@@ -237,7 +246,7 @@ void mazeGame::GameStart()
             }
         }*/
 
-        //window.clear(Color(255, 255, 255));
+        
 
         // 미로 그려주기
         for (int i = 0; i < 15 * 15; i++) {
