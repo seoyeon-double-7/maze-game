@@ -15,16 +15,58 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="QuitState.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreState.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecialState.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StateManager.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EEToString.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuState.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PacEngine.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PacEntity.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PacEvent.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ScoreState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StateManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PacEngine.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="game.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,21 +1,27 @@
-#include "game.h"
+#include "StateManager.h"
+#include "MenuState.h"
 #include "SFML/Audio.hpp"
 
+using namespace edy;
+using namespace core;
+using namespace state;
+using namespace sf;
 
-int main(void) {
+int main()
+{
+	// state 매니저 호출
+	StateManager app;
 
-    Music music;
+	// 인트로(메뉴) 화면 설정
+	app.pushTop(new MenuState);
 
-    music.openFromFile("music/backMusic.wav");
-    //music.setVolume(50);
-    music.play();
-    music.setLoop(true);
+	// 음악 재생(끝날때까지 무한 반복)
+	Music music;
+	music.openFromFile("music/backMusic.wav");
+	music.play();
+	music.setLoop(true);
 
-    mazeGame game;
-    //game.Intro();
-    //game.GameSet();
-    
-    game.GameStart();
-    
-    return 0;
+
+	// 현재 스택 가장 최상단에 있는 Run 함수를 실행!
+	app.gameRun();
 }
